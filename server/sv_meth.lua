@@ -1,0 +1,55 @@
+ESX = nil
+TriggerEvent('esx:getSharedObject', function(obj) ESX = obj end)
+
+ESX.RegisterServerCallback("nolex_drugs:HasIngridients", function(source, cb)
+	local xPlayer = ESX.GetPlayerFromId(source)
+	print(xPlayer.getInventoryItem('meth_acestone').count)
+end)
+
+RegisterServerEvent('nolex_drugs:make')
+AddEventHandler('nolex_drugs:make', function(posx, posy, posz)
+	local _source = source
+	local xPlayer = ESX.GetPlayerFromId(_source)
+	
+
+	local xPlayers = ESX.GetPlayers()
+	for i=1, #xPlayers, 1 do
+		TriggerClientEvent('nolex_drugs:smoke', xPlayers[i], posx, posy, posz, 'a') 
+	end
+end)
+
+RegisterServerEvent('nolex_drugs:finish')
+AddEventHandler('nolex_drugs:finish', function(qualtiy)
+	local _source = source
+	local xPlayer = ESX.GetPlayerFromId(_source)
+
+	local rnd = math.random(-5, 5)
+
+	xPlayer.addInventoryItem('meth', math.floor(qualtiy / 2) + rnd)
+end)
+
+RegisterServerEvent('nolex_drugs:blow')
+AddEventHandler('nolex_drugs:blow', function(posx, posy, posz)
+	local _source = source
+	local xPlayer = ESX.GetPlayerFromId(_source)
+
+	local xPlayers = ESX.GetPlayers()
+	for i=1, #xPlayers, 1 do
+		TriggerClientEvent('nolex_drugs:blowup', xPlayers[i], posx, posy, posz)
+	end 
+
+	xPlayer.removeInventoryItem('methlab', 1)
+end)
+
+RegisterServerEvent('nolex_drugs:giveItem')
+AddEventHandler('nolex_drugs:giveItem', function(itemName, itemCount)
+	local _source = source
+	local xPlayer = ESX.GetPlayerFromId(_source)
+
+	if xPlayer.canCarryItem(itemName, itemCount) then
+		xPlayer.addInventoryItem(itemName, itemCount)
+		TriggerClientEvent('mythic_notify:client:SendAlert', xPlayer.source, { type = 'inform', text = 'Sa said '..itemCount..'x '..xPlayer.getInventoryItem(itemName).label..'!', length = 3500, style = { ['background-color'] = '#8A2BE2'} })
+	else
+		TriggerClientEvent('mythic_notify:client:SendAlert', xPlayer.source, { type = 'error', text = 'Sul ei ole inventuuris ruumi!', length = 3500})
+	end
+end)
