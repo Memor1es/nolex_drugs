@@ -33,26 +33,6 @@ local IngridientsLocations = {
 	}
 }
 
-RegisterNetEvent('nolex_drugs:blowup')
-AddEventHandler('nolex_drugs:blowup', function(posx, posy, posz)
-	AddExplosion(posx, posy, posz + 2,23, 20.0, true, false, 1.0, true)
-
-	if not HasNamedPtfxAssetLoaded("core") then
-		RequestNamedPtfxAsset("core")
-		while not HasNamedPtfxAssetLoaded("core") do
-			Wait(1)
-		end
-	end
-
-	SetPtfxAssetNextCall("core")
-	local fire = StartParticleFxLoopedAtCoord("ent_ray_heli_aprtmnt_l_fire", posx, posy, posz-0.8 , 0.0, 0.0, 0.0, 0.8, false, false, false, false)
-
-	Wait(6000)
-
-	StopParticleFxLooped(fire, 0)
-end)
-
-
 RegisterNetEvent('nolex_drugs:smoke')
 AddEventHandler('nolex_drugs:smoke', function(posx, posy, posz, bool)
 	if bool == 'a' then
@@ -204,7 +184,7 @@ Citizen.CreateThread(function()
 					ESX.TriggerServerCallback('nolex_drugs:HasIngridients', function(result)
 						if result then
 							local coords = GetEntityCoords(PlayerPedId())
-							TriggerServerEvent('nolex_drugs:make', coords)
+							TriggerServerEvent('nolex_drugs:make', coords.x, coords.y,coords.z)
 						else
 							exports['mythic_notify']:SendAlert('error', 'Sul ei ole cookimse jaoks asju!')
 						end
@@ -226,7 +206,6 @@ Citizen.CreateThread(function()
 		Wait(1000)
 	end
 end)
-
 -- [For Testing] --
 
 local CurrentZoneLabel = ''
