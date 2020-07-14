@@ -33,26 +33,6 @@ local IngridientsLocations = {
 	}
 }
 
-RegisterNetEvent('nolex_drugs:stop')
-AddEventHandler('nolex_drugs:stop', function()
-	started = false
-	FreezeEntityPosition(LastCar, false)
-end)
-
-RegisterNetEvent('nolex_drugs:stopfreeze')
-AddEventHandler('nolex_drugs:stopfreeze', function(id)
-	FreezeEntityPosition(id, false)
-end)
-
-RegisterNetEvent('nolex_drugs:startprod')
-AddEventHandler('nolex_drugs:startprod', function()
-	started = true
-	FreezeEntityPosition(CurrentVehicle, true)
-
-	SetPedIntoVehicle(PlayerPedId(), CurrentVehicle, 3)
-	SetVehicleDoorOpen(CurrentVehicle, 2)
-end)
-
 RegisterNetEvent('nolex_drugs:blowup')
 AddEventHandler('nolex_drugs:blowup', function(posx, posy, posz)
 	AddExplosion(posx, posy, posz + 2,23, 20.0, true, false, 1.0, true)
