@@ -7,18 +7,17 @@ Citizen.CreateThread(function()
 	end
 end)
 
-local started = false
-local displayed = false
-local progress = 0
-local CurrentVehicle 
-local pause = false
-local selection = 0
-local quality = 0
-local LastCar
+AddEventHandler('esx:onPlayerDeath', function(data) isDead = true end)
+AddEventHandler('esx:onPlayerSpawn', function(spawn) isDead = false end)
 
+-- [Main Thread]
+
+local started = false
 local ingridientsRun = false
 local LabSetup = false
 local CurrentZone = nil
+
+local CurrentVehicle
 
 local IngridientsLocations = {
 	Patareid = {
@@ -47,12 +46,8 @@ end)
 
 RegisterNetEvent('nolex_drugs:startprod')
 AddEventHandler('nolex_drugs:startprod', function()
-	DisplayHelpText("~g~Starting production")
 	started = true
-	FreezeEntityPosition(CurrentVehicle,true)
-	displayed = false
-
-	print('Started Meth production')
+	FreezeEntityPosition(CurrentVehicle, true)
 
 	SetPedIntoVehicle(PlayerPedId(), CurrentVehicle, 3)
 	SetVehicleDoorOpen(CurrentVehicle, 2)
@@ -107,7 +102,7 @@ end)
 RegisterCommand("meth", function()
 	local playerPed = PlayerPedId()
 
-	if IsPedInAnyVehicle(playerPed) then
+	if IsPedInAnyVehicle(playerPed) and not isDead then
 	
 		local CurrentVehicle = GetVehiclePedIsUsing(PlayerPedId())
 		local car = GetVehiclePedIsIn(playerPed, false)
@@ -243,12 +238,16 @@ Citizen.CreateThread(function()
 	end
 end)
 
+-- [For Testing] -- 
+
 Citizen.CreateThread(function()
 	while true do
 		print(ingridientsRun, LabSetup, CurrentZone)
 		Wait(1000)
 	end
 end)
+
+-- [For Testing] --
 
 local CurrentZoneLabel = ''
 
